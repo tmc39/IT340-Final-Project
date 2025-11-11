@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EventLink - Login to Campus Events</title>
+  <style>
+    /* Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to bottom right, #ebf8ff, #e0e7ff);
+      color: #1F2937;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    header nav {
+      max-width: 900px;
+      margin: auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background-color: #3B82F6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 6px; /* square with rounded corners */
+      color: #fff;
+      font-size: 18px;
+    }
+
+    nav a {
+      margin-left: 1.5rem;
+      text-decoration: none;
+      color: #4B5563;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: #3B82F6;
+    }
+
+    /* Main */
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem 1rem;
+    }
+
+    .container {
+      max-width: 400px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* Login Card */
+    .login-card {
+      background-color: #ffffff;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .login-card h2 {
+      font-size: 24px;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+
+    .login-card p {
+      text-align: center;
+      color: #6B7280;
+      margin-bottom: 1.5rem;
+    }
+
+    .login-card input[type="email"],
+    .login-card input[type="password"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      border-radius: 10px;
+      border: 1px solid #D1D5DB;
+      font-size: 14px;
+    }
+
+    .login-card input:focus {
+      outline: none;
+      border-color: #3B82F6;
+      box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+    }
+
+    .login-card label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .login-card .checkbox-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 14px;
+    }
+
+    .login-card button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #3B82F6;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .login-card button:hover {
+      background-color: #1E40AF;
+    }
+
+    /* Features */
+    .features {
+      background-color: #ffffff;
+      padding: 1.5rem;
+      border-radius: 20px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      text-align: center;
+    }
+
+    .features div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .features i {
+      font-size: 24px;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #ffffff;
+      border-top: 1px solid #E5E7EB;
+      padding: 2rem 1rem;
+      text-align: center;
+      font-size: 14px;
+      color: #6B7280;
+    }
+
+    footer a {
+      margin: 0 0.5rem;
+      color: #6B7280;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    footer a:hover {
+      color: #3B82F6;
+    }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+      .features {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <nav>
+      <div class="logo">
+        <div class="logo-icon"><i class="fas fa-calendar-alt"></i></div>
+        <span>EventLink</span>
+      </div>
+      <div>
+        <a href="#">Home</a>
+        <a href="#">Events</a>
+        <a href="#">About</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main -->
+  <main>
+    <div class="container">
+      <!-- Login Card -->
+      <div class="login-card">
+        <h2>Welcome Back</h2>
+        <p>Sign in to your EventLink account</p>
+        <form id="loginForm">
+          <label for="email">University Email</label>
+          <input type="email" id="email" placeholder="your.email@university.edu" required>
+
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter your password" required>
+
+          <div class="checkbox-container">
+            <label><input type="checkbox"> Remember me</label>
+            <a href="#">Forgot password?</a>
+          </div>
+
+          <button type="submit">Sign In</button>
+        </form>
+      </div>
+
+      <!-- Features -->
+      <div class="features">
+        <div>
+          <i class="fas fa-search" style="color:#3B82F6"></i>
+          <p>Find Events</p>
+        </div>
+        <div>
+          <i class="fas fa-calendar-plus" style="color:#F59E0B"></i>
+          <p>RSVP Instantly</p>
+        </div>
+        <div>
+          <i class="fas fa-bell" style="color:#8B5CF6"></i>
+          <p>Get Reminders</p>
+        </div>
+        <div>
+          <i class="fas fa-users" style="color:#10B981"></i>
+          <p>Connect with Peers</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 EventLink. Connecting students with campus events.</p>
+    <p>
+      <a href="#">Privacy</a>|
+      <a href="#">Terms</a>|
+      <a href="#">Contact</a>
+    </p>
+  </footer>
+
+  <script>
+    // Form submission alert
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      alert(`Login not implemented yet.\nEmail: ${email}\nPassword: ${'*'.repeat(password.length)}`);
+    });
+  </script>
+</body>
+</html>
