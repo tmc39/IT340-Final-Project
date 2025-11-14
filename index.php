@@ -1,33 +1,15 @@
-<?php
-//Main html file
-session_start();
-?>
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>EventLink</title>
-    <!--<link rel="icon" type="image/png" href="/images/logo.png">
-    <link rel="stylesheet" type="text/css" href="styling.css">-->
+  <meta charset="utf-8">
+  <title>EventLink</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <?php
+  include("EventPage.php");
+  ?>
 </head>
 <body>
-    <header>
-       EVENTLINK
-    </header>
-    <section style="height: 425px;">
-       <nav style="float: left; height: 100%;">
-           <?php include("nav.inc.php"); ?>
-       </nav>
-       <main>
-           <?php
-             include("EventDashboard.inc.php");
-           ?>
-           
-       </main>
-   </section>
-   <footer>
-        <?php
-            
-        ?>
-   </footer>
+  <app-root></app-root>
 </body>
 </html>
