@@ -1,3 +1,4 @@
+import User from user.js;
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
@@ -11,22 +12,18 @@ const JWT_SECRET = 'eventlink-secret-key-2025';
 app.use(cors());
 app.use(express.json());
 
+
+
+//Defines socket to connect to on VM3 for the database
 const MONGO_URI = 'mongodb://192.168.56.103:27017/eventlink';
 
-
+//Connects mongoose to the database
 mongoose.connect(MONGO_URI)
 .then(() => console.log('Connected to MongoDB on VM3'))
 .catch(err => console.error('MongoDB connection error:', err));
 
 
-const userSchema = new mongoose.Schema({
-  fullname: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now }
-});
 
-const User = mongoose.model('User', userSchema);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'EventLink API is running' });
