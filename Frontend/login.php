@@ -136,21 +136,29 @@
     <div class="login-card">
       <h2>Welcome Back</h2>
       <p>Sign in to your EventLink account</p>
-      <form id="loginForm">
+      <form (ngSubmit)="onSubmit()">
         <label for="email">University Email</label>
-        <input type="email" id="email" placeholder="your.email@university.edu" required>
+        <input type="email" id="email" [(ngModel)]="email" name="email" placeholder="your.email@university.edu" required>
 
         <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Enter your password" required>
+        <input type="password" id="password" [(ngModel)]="password" name="password" placeholder="Enter your password" required>
+        
+      <div *ngIf="errorMessage" style="color: red; margin-bottom: 1rem; text-align: center;">
+        {{ errorMessage }}
+      </div>
 
-        <div class="checkbox-container">
-          <label><input type="checkbox"> Remember me</label>
-          <a href="#">Forgot password?</a>
-        </div>
+      <div class="checkbox-container">
+        <label><input type="checkbox"> Remember me</label>
+        <a href="#">Forgot password?</a>
+      </div>
 
-        <button type="submit">Sign In</button>
-      </form>
+      <button type="submit">Sign In</button>
+    </form>
+
+    <div class="register-link">
+      Don't have an account? <a href="/register">Sign up</a>
     </div>
+
 
     <div class="features">
       <div>

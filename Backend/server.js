@@ -1,4 +1,4 @@
-import User from user.js;
+import U from user.js;
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
