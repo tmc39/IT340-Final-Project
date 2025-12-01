@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create Event | EventLink</title>
-  <link rel="stylesheet" href="styling.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -17,74 +16,33 @@
       width:100%;
     }
 
-    .create-container h2 { 
-        font-size:28px; 
-        text-align:center; 
-        margin-bottom:0.5rem; 
-        color:#1E3A8A; 
-    }
+    .create-container h2 { font-size:28px; text-align:center; margin-bottom:0.5rem; color:#1F2937; }
+    .create-container p { text-align:center; color:#6B7280; margin-bottom:2rem; font-size:15px; }
 
-    .create-container p { 
-        text-align:center; 
-        color:#6B7280; 
-        margin-bottom:2rem; 
-    }
+    form { display:flex; flex-direction:column; gap:1.2rem; }
 
-    form { 
-        display:flex; 
-        flex-direction:column; 
-        gap:1.2rem; 
-    }
-
-    label { 
-        font-weight:500; 
-        margin-bottom:0.3rem; 
-        display:block; 
-        color:#374151; 
-    }
+    label { font-weight:500; margin-bottom:0.3rem; display:block; color:#374151; }
 
     input[type="text"], input[type="date"], input[type="time"], textarea, select {
-      width:100%; 
-      padding:0.75rem 1rem; 
-      border-radius:10px; 
-      border:1px solid #D1D5DB; 
-      font-size:14px; 
-      background-color:#F9FAFB; 
-      transition: all 0.2s;
+      width:100%; padding:0.75rem 1rem; border-radius:10px; border:1px solid #D1D5DB; font-size:14px; background-color:#F9FAFB; transition: all 0.2s;
     }
-
-    input:focus, textarea:focus, select:focus { 
-        outline:none; 
-        border-color:#3B82F6; 
-        box-shadow:0 0 0 2px rgba(59,130,246,0.2); 
-        background-color:#fff; 
-    }
-
-    textarea { 
-        resize:vertical; 
-    }
+    input:focus, textarea:focus, select:focus { outline:none; border-color:#3B82F6; box-shadow:0 0 0 2px rgba(59,130,246,0.2); background-color:#fff; }
+    textarea { resize:vertical; min-height:100px; }
 
     button {
-      background-color:#3B82F6; 
-      color:white; 
-      font-size:16px; 
-      padding:0.9rem; 
-      border:none; 
-      border-radius:10px; 
-      cursor:pointer; 
-      transition:background-color 0.2s; 
-      margin-top:1rem;
+      background-color:#3B82F6; color:white; font-size:16px; font-weight:500; padding:0.9rem; border:none; border-radius:10px; cursor:pointer; transition:background-color 0.2s; margin-top:1rem;
     }
+    button:hover { background-color:#1E40AF; }
 
-    button:hover { 
-        background-color:#1E40AF; 
-    }
+    .form-row { display:flex; gap:1rem; }
+    .form-row > div { flex:1; }
+
 
     @media (max-width:600px){ 
-        .create-container{padding:1.5rem;} 
-        nav a{margin-left:1rem; font-size:14px;} 
+      .create-container{padding:1.5rem;} 
+      nav a{margin-left:1rem; font-size:14px;}
+      .form-row { flex-direction:column; }
     }
-    
   </style>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
@@ -192,4 +150,7 @@
 </script>
 </body>
 </html>
+
+
+
 
