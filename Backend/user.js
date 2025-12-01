@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 }, {
-    //Enables timestamps option. Timestamps create createdAt and updatedAt fields in the schema which are automatically updated by mongodb. 
+    //Enables timestamps option. Timestamps create createdAt and updatedAt fields in the schema which are automatically managed by mongodb. 
     timestamps:true
 });
 

@@ -1,4 +1,6 @@
-import U from user.js;
+//Imports mongodb User schema from the appropriate file
+import User from user.js;
+
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
@@ -23,12 +25,11 @@ mongoose.connect(MONGO_URI)
 .catch(err => console.error('MongoDB connection error:', err));
 
 
-
-
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'EventLink API is running' });
 });
 
+//Function for registering users
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { fullname, email, password } = req.body;
@@ -66,19 +67,23 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
+//Function for logging users in
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    //Checks if email and password both have values assigned to them to make sure the user entered them, returns error if not. 
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password required' });
     }
 
+    //Checks mongodb for the email used in the login to make sure that an account is registered to it, returns error if not. 
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
+    //Uses bcrypt's compare function (since the password is hashed) to check if the password passed to the function along with the email matches the one stored in the database. 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({ error: 'Invalid credentials' });
@@ -86,12 +91,14 @@ app.post('/api/auth/login', async (req, res) => {
 
     const token = jwt.sign({ userId: user._id, email: user.email }, JWT_SECRET, { expiresIn: '24h' });
 
+    //JSON response with a message, the token and user credentials
     res.json({
       message: 'Login successful',
       token,
       user: { id: user._id, fullname: user.fullname, email: user.email }
     });
 
+    //Generic error catch
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Server error' });
