@@ -6,15 +6,21 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-
 const app = express();
 const PORT = 3000;
 const JWT_SECRET = 'eventlink-secret-key-2025';
+const SSH = require('simple-ssh');
 
 app.use(cors());
 app.use(express.json());
 
-
+//Creates ssh connection to VM4 for logging purposes
+//FOR PREET - Add username and password for VM4 to the corresponding parameters 
+const ssh = new SSH({
+  host: '192.168.56.104',
+  user: '',
+  pass: ''
+});
 
 //Defines socket to connect to on VM3 for the database
 const MONGO_URI = 'mongodb://192.168.56.103:27017/eventlink';
@@ -29,19 +35,25 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'EventLink API is running' });
 });
 
+
+
 //Function for registering users
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { fullname, email, password } = req.body;
 
+    ssh.exec('echo "$(date) - User registration attempted" >> loginLogs.txt').start();
+
     //Checks that all user parameters have been entered by the user, returns error if not.
     if (!fullname || !email || !password) {
+      ssh.exec('echo "$(date) - User registration failed: Not all parameters entered" >> loginLogs.txt').start();
       return res.status(400).json({ error: 'All fields required' });
     }
-
+    
     //Checks if the email passed to the backend is already assigned to an account in the database, if it is then an error is returned. 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+      ssh.exec('echo "$(date) - User registration failed: User already exists" >> loginLogs.txt').start();
       return res.status(400).json({ error: 'User already exists' });
     }
 
@@ -58,8 +70,9 @@ app.post('/api/auth/register', async (req, res) => {
     //Saves the new user's information to the database
     await newUser.save();
 
-
     const token = jwt.sign({ userId: newUser._id, email: newUser.email }, JWT_SECRET, { expiresIn: '24h' });
+
+    ssh.exec('echo "$(date) - User registration successful" >> loginLogs.txt').start();
 
     //Sends JSON response containing a message, token, and user credentials. 
     res.status(201).json({
@@ -75,25 +88,32 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
+
+
 //Function for logging users in
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    
+    ssh.exec('echo "$(date) - User login attempted" >> loginLogs.txt').start();
 
     //Checks if email and password both have values assigned to them to make sure the user entered them, returns error if not. 
     if (!email || !password) {
+      ssh.exec('echo "$(date) - User login failed: Not all parameters entered" >> loginLogs.txt').start();
       return res.status(400).json({ error: 'Email and password required' });
     }
 
     //Checks mongodb for the email used in the login to make sure that an account is registered to it, returns error if not. 
     const user = await User.findOne({ email });
     if (!user) {
+      ssh.exec('echo "$(date) - User login failed: Email not found" >> loginLogs.txt').start();
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     //Uses bcrypt's compare function (since the password is hashed) to check if the password passed to the function along with the email matches the one stored in the database. 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
+      ssh.exec('echo "$(date) - User login failed: Invalid password" >> loginLogs.txt').start();
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
