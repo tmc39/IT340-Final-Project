@@ -1,138 +1,184 @@
-//Imports mongodb User schema from the appropriate file
-import User from user.js;
-
 const express = require('express');
+const https = require('https');
+const fs = require('fs');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+
+// Logger function to send logs to VM4 (non-blocking)
+const logToService = (level, message, data = {}) => {
+  const http = require('http');
+  
+  const logData = JSON.stringify({
+    level,
+    service: 'BACKEND-API',
+    message,
+    data
+  });
+
+  const options = {
+    hostname: '192.168.56.104',
+    port: 5000,
+    path: '/log',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(logData)
+    }
+  };
+
+  const req = http.request(options, (res) => {
+    res.on('data', () => {});
+  });
+
+  req.on('error', (error) => {
+    console.error('Failed to send log:', error.message);
+  });
+
+  req.write(logData);
+  req.end();
+};
+
 const app = express();
 const PORT = 3000;
 const JWT_SECRET = 'eventlink-secret-key-2025';
-const SSH = require('simple-ssh');
 
-app.use(cors());
-app.use(express.json());
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 
-//Creates ssh connection to VM4 for logging purposes
-//FOR PREET - Add username and password for VM4 to the corresponding parameters 
-const ssh = new SSH({
-  host: '192.168.56.104',
-  user: '',
-  pass: ''
+// Manual CORS headers
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin);
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
 });
 
-//Defines socket to connect to on VM3 for the database
+app.use(express.json());
+
 const MONGO_URI = 'mongodb://192.168.56.103:27017/eventlink';
 
-//Connects mongoose to the database
 mongoose.connect(MONGO_URI)
-.then(() => console.log('Connected to MongoDB on VM3'))
-.catch(err => console.error('MongoDB connection error:', err));
+.then(() => {
+  console.log('Connected to MongoDB on VM3');
+  logToService('INFO', 'Backend connected to MongoDB', { mongoUri: MONGO_URI });
+})
+.catch(err => {
+  console.error('MongoDB connection error:', err);
+  logToService('ERROR', 'MongoDB connection failed', { error: err.message });
+});
 
-//Function checks if app is running
+const userSchema = new mongoose.Schema({
+  fullname: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const User = mongoose.model('User', userSchema);
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'EventLink API is running' });
 });
 
-
-
-//Function for registering users
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { fullname, email, password } = req.body;
 
-    ssh.exec('echo "$(date) - User registration attempted" >> loginLogs.txt').start();
+    logToService('INFO', 'User registration attempt', { email });
 
-    //Checks that all user parameters have been entered by the user, returns error if not.
     if (!fullname || !email || !password) {
-      ssh.exec('echo "$(date) - User registration failed: Not all parameters entered" >> loginLogs.txt').start();
+      logToService('WARN', 'Registration failed: Missing fields', { email });
       return res.status(400).json({ error: 'All fields required' });
     }
-    
-    //Checks if the email passed to the backend is already assigned to an account in the database, if it is then an error is returned. 
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      ssh.exec('echo "$(date) - User registration failed: User already exists" >> loginLogs.txt').start();
+      logToService('WARN', 'Registration failed: User already exists', { email });
       return res.status(400).json({ error: 'User already exists' });
     }
 
-    //After passing all the checks, the bcrypt module is used to hash the password with 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    //Creates a new document for the new user to be stored in the database. 
     const newUser = new User({
       fullname,
       email,
       password: hashedPassword
     });
 
-    //Saves the new user's information to the database
     await newUser.save();
+
+    logToService('INFO', 'User registered successfully', { email, userId: newUser._id.toString() });
 
     const token = jwt.sign({ userId: newUser._id, email: newUser.email }, JWT_SECRET, { expiresIn: '24h' });
 
-    ssh.exec('echo "$(date) - User registration successful" >> loginLogs.txt').start();
-
-    //Sends JSON response containing a message, token, and user credentials. 
     res.status(201).json({
       message: 'User registered successfully',
       token,
       user: { id: newUser._id, fullname: newUser.fullname, email: newUser.email }
     });
 
-    //Generic catch error statement
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('Register error:', error);
+    logToService('ERROR', 'Registration error', { error: error.message });
     res.status(500).json({ error: 'Server error' });
   }
 });
 
-
-
-//Function for logging users in
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    
-    ssh.exec('echo "$(date) - User login attempted" >> loginLogs.txt').start();
 
-    //Checks if email and password both have values assigned to them to make sure the user entered them, returns error if not. 
+    logToService('INFO', 'User login attempt', { email });
+
     if (!email || !password) {
-      ssh.exec('echo "$(date) - User login failed: Not all parameters entered" >> loginLogs.txt').start();
+      logToService('WARN', 'Login failed: Missing credentials', { email });
       return res.status(400).json({ error: 'Email and password required' });
     }
 
-    //Checks mongodb for the email used in the login to make sure that an account is registered to it, returns error if not. 
     const user = await User.findOne({ email });
     if (!user) {
-      ssh.exec('echo "$(date) - User login failed: Email not found" >> loginLogs.txt').start();
+      logToService('WARN', 'Login failed: User not found', { email });
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    //Uses bcrypt's compare function (since the password is hashed) to check if the password passed to the function along with the email matches the one stored in the database. 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      ssh.exec('echo "$(date) - User login failed: Invalid password" >> loginLogs.txt').start();
+      logToService('WARN', 'Login failed: Invalid password', { email });
       return res.status(401).json({ error: 'Invalid credentials' });
     }
+
+    logToService('INFO', 'User logged in successfully', { email, userId: user._id.toString() });
 
     const token = jwt.sign({ userId: user._id, email: user.email }, JWT_SECRET, { expiresIn: '24h' });
 
-    //JSON response with a message, the token and user credentials
     res.json({
       message: 'Login successful',
       token,
       user: { id: user._id, fullname: user.fullname, email: user.email }
     });
 
-    //Generic error catch
   } catch (error) {
     console.error('Login error:', error);
+    logToService('ERROR', 'Login error', { error: error.message });
     res.status(500).json({ error: 'Server error' });
   }
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`EventLink API running on http://192.168.56.102:${PORT}`);
+const httpsOptions = {
+  key: fs.readFileSync('./ssl/key.pem'),
+  cert: fs.readFileSync('./ssl/cert.pem')
+};
+
+https.createServer(httpsOptions, app).listen(PORT, '0.0.0.0', () => {
+  console.log(`EventLink API running on https://192.168.56.102:${PORT}`);
+  console.log(`MongoDB: ${MONGO_URI}`);
+  logToService('INFO', 'Backend API started', { port: PORT });
 });
