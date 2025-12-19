@@ -8,22 +8,21 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-    main {
-      flex:1; 
-      max-width:1200px; 
-      margin:2rem auto; 
-      width:100%;
-      padding:0 1rem; 
-      display:grid; 
-      grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); 
-      gap:2rem;
+    h1 { 
+      grid-column:1/-1; 
+      text-align:center; 
+      font-size:32px; 
+      margin-bottom:1rem; 
     }
-   
-    h1 { grid-column:1/-1; text-align:center; font-size:32px; margin-bottom:1rem; }
 
     .card {
-      background-color:#ffffff; border-radius:20px; box-shadow:0 6px 12px rgba(0,0,0,0.1); padding:1.5rem;
-      display:flex; flex-direction:column; gap:1rem;
+      background-color:#ffffff; 
+      border-radius:20px; 
+      box-shadow:0 6px 12px rgba(0,0,0,0.1); 
+      padding:1.5rem;
+      display:flex; 
+      flex-direction:column; 
+      gap:1rem;
     }
 
     .card h2 { 
@@ -60,8 +59,12 @@
     }
 
     .event-item {
-      padding:0.75rem 1rem; border:1px solid #D1D5DB; border-radius:10px;
-      display:flex; justify-content:space-between; align-items:center;
+      padding:0.75rem 1rem; 
+      border:1px solid #D1D5DB; 
+      border-radius:10px;
+      display:flex; 
+      justify-content:space-between; 
+      align-items:center;
     }
 
     .event-item span { 

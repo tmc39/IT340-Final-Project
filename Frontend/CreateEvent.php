@@ -16,26 +16,80 @@
       width:100%;
     }
 
-    .create-container h2 { font-size:28px; text-align:center; margin-bottom:0.5rem; color:#1F2937; }
-    .create-container p { text-align:center; color:#6B7280; margin-bottom:2rem; font-size:15px; }
+    .create-container h2 { 
+      font-size:28px; 
+      text-align:center; 
+      margin-bottom:0.5rem; 
+      color:#1F2937; 
+    }
 
-    form { display:flex; flex-direction:column; gap:1.2rem; }
+    .create-container p { 
+      text-align:center; 
+      color:#6B7280; 
+      margin-bottom:2rem; 
+      font-size:15px; 
+    }
 
-    label { font-weight:500; margin-bottom:0.3rem; display:block; color:#374151; }
+    form { 
+      display:flex; 
+      flex-direction:column; 
+      gap:1.2rem; 
+    }
+
+    label { 
+      font-weight:500; 
+      margin-bottom:0.3rem; 
+      display:block; 
+      color:#374151; 
+    }
 
     input[type="text"], input[type="date"], input[type="time"], textarea, select {
-      width:100%; padding:0.75rem 1rem; border-radius:10px; border:1px solid #D1D5DB; font-size:14px; background-color:#F9FAFB; transition: all 0.2s;
+      width:100%; 
+      padding:0.75rem 1rem; 
+      border-radius:10px; 
+      border:1px solid #D1D5DB; 
+      font-size:14px; 
+      background-color:#F9FAFB; 
+      transition: all 0.2s;
     }
-    input:focus, textarea:focus, select:focus { outline:none; border-color:#3B82F6; box-shadow:0 0 0 2px rgba(59,130,246,0.2); background-color:#fff; }
-    textarea { resize:vertical; min-height:100px; }
+
+    input:focus, textarea:focus, select:focus { 
+      outline:none; 
+      border-color:#3B82F6; 
+      box-shadow:0 0 0 2px rgba(59,130,246,0.2); 
+      background-color:#fff; 
+    }
+
+    textarea { 
+      resize:vertical; 
+      min-height:100px; 
+    }
 
     button {
-      background-color:#3B82F6; color:white; font-size:16px; font-weight:500; padding:0.9rem; border:none; border-radius:10px; cursor:pointer; transition:background-color 0.2s; margin-top:1rem;
+      background-color:#3B82F6; 
+      color:white; 
+      font-size:16px; 
+      font-weight:500; 
+      padding:0.9rem; 
+      border:none; 
+      border-radius:10px; 
+      cursor:pointer; 
+      transition:background-color 0.2s; 
+      margin-top:1rem;
     }
-    button:hover { background-color:#1E40AF; }
 
-    .form-row { display:flex; gap:1rem; }
-    .form-row > div { flex:1; }
+    button:hover { 
+      background-color:#1E40AF; 
+    }
+
+    .form-row { 
+      display:flex; 
+      gap:1rem; 
+    }
+
+    .form-row > div { 
+      flex:1; 
+    }
 
 
     @media (max-width:600px){ 
