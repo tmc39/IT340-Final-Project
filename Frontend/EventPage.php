@@ -8,17 +8,6 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-    main {
-      flex: 1;
-      max-width: 1200px;
-      margin: 2rem auto;
-      width: 100%;
-      padding: 0 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-
     h1 {
       text-align: center;
       font-size: 32px;
